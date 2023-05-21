@@ -29,7 +29,7 @@ int main (int argc, char *argv[])
    char  *marked;       /* Portion of 2,...,'n' */
    LLong  n;            /* Sieving from 2, ..., 'n' */
    int    p;            /* Number of processes */
-   int    proc0_size;   /* Size of proc 0's subarray */
+   LLong    proc0_size;   /* Size of proc 0's subarray */
    LLong    prime;        /* Current prime */
    LLong    size;         /* Elements in 'marked' */
 
@@ -110,7 +110,7 @@ int main (int argc, char *argv[])
    /* Print the results */
 
    if (!id) {
-      printf ("There are %d primes less than or equal to %d\n",
+      printf ("There are %lld primes less than or equal to %lld\n",
          global_count, n);
       printf ("SIEVE (%d) %10.6f\n", p, elapsed_time);
    }
