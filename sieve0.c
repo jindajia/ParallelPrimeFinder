@@ -54,16 +54,22 @@ int main (int argc, char *argv[])
       well as the integers represented by the first and
       last array elements */
 
-   low_value = 2 + id*(n-1)/p;
-   high_value = 1 + (id+1)*(n-1)/p;
-   size = high_value - low_value + 1;
+   /* 
+      We want to delete Even numbers.
+      So we only have (n-1)/2 elements.
+      */
+   
+
+   low_value = 3 + id*((n-1)/2)/p*2;
+   high_value = 1 + (id+1)*((n-1)/2)/p*2;
+   size = (high_value - low_value)/2 + 1;
 
    /* Bail out if all the primes used for sieving are
       not all held by process 0 */
 
-   proc0_size = (n-1)/p;
+   proc0_size = 1+(n-1)/2/p*2;
 
-   if ((2 + proc0_size) < (long long) sqrt((double) n)) {
+   if ((proc0_size) < (long long) sqrt((double) n)) {
       if (!id) printf ("Too many processes\n");
       MPI_Finalize();
       exit (1);
@@ -81,18 +87,24 @@ int main (int argc, char *argv[])
 
    for (i = 0; i < size; i++) marked[i] = 0;
    if (!id) index = 0;
-   prime = 2;
+   prime = 3;
    do {
       if (prime * prime > low_value)
-         first = prime * prime - low_value;
+         first = (prime * prime - low_value) / 2;
       else {
          if (!(low_value % prime)) first = 0;
-         else first = prime - (low_value % prime);
+         else {
+            if ( (prime - (low_value) % prime) % 2 == 0) {
+               first = (prime - (low_value) % prime) / 2;
+            } else {
+               first = (prime * 2 - (low_value) % prime) / 2;
+            }
+         }
       }
       for (i = first; i < size; i += prime) marked[i] = 1;
       if (!id) {
          while (marked[++index]);
-         prime = index + 2;
+         prime = index * 2 + 3;
       }
       if (p > 1) MPI_Bcast (&prime,  1, MPI_INT, 0, MPI_COMM_WORLD);
    } while (prime * prime <= n);
@@ -110,6 +122,7 @@ int main (int argc, char *argv[])
    /* Print the results */
 
    if (!id) {
+      global_count++;
       printf ("There are %lld primes less than or equal to %lld\n",
          global_count, n);
       printf ("SIEVE (%d) %10.6f\n", p, elapsed_time);
