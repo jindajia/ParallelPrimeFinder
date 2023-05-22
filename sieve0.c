@@ -19,19 +19,19 @@ int main (int argc, char *argv[])
 {
    LLong  count;        /* Local prime count */
    double elapsed_time; /* Parallel execution time */
-   LLong    first;        /* Index of first multiple */
+   LLong  first;        /* Index of first multiple */
    LLong  global_count; /* Global prime count */
-   LLong    high_value;   /* Highest value on this proc */
-   LLong    i;
+   LLong  high_value;   /* Highest value on this proc */
+   LLong  i;
    int    id;           /* Process ID number */
    int    index;        /* Index of current prime */
-   LLong    low_value;    /* Lowest value on this proc */
+   LLong  low_value;    /* Lowest value on this proc */
    char  *marked;       /* Portion of 2,...,'n' */
    LLong  n;            /* Sieving from 2, ..., 'n' */
    int    p;            /* Number of processes */
-   LLong    proc0_size;   /* Size of proc 0's subarray */
-   LLong    prime;        /* Current prime */
-   LLong    size;         /* Elements in 'marked' */
+   LLong  proc0_size;   /* Size of proc 0's subarray */
+   LLong  prime;        /* Current prime */
+   LLong  size;         /* Elements in 'marked' */
 
    MPI_Init (&argc, &argv);
 
