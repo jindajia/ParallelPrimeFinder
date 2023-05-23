@@ -38,6 +38,9 @@ int main (int argc, char *argv[])
    LLong  outer_i;      /* Designed for increase cache hit, control outer loop index */
    LLong  low_block_value; /* Designed for increase cache hit, current blcok low_value */
    LLong  high_block_value;/* Designed for increase cache hit, current blcok low_value */  
+   LLong *primes_cache;       /* Designed for increase cache hit, because iterating find next prime is not efficient */
+   LLong  prcache_size;
+   LLong  sqrt_N;
    MPI_Init (&argc, &argv);
 
    /* Start the timer */
@@ -65,9 +68,10 @@ int main (int argc, char *argv[])
       */
    
 
+   sqrt_N = (long long) sqrt((double) n);
    low_value = 3;
-   high_value = (n-1)/2/p*2 + 1;
-   parent_size = ((n-1)/2/p*2 - 2)/2 + 1;
+   high_value = sqrt_N - (sqrt_N + 1) % 2;
+   parent_size = (high_value - low_value) / 2 + 1;
 
    /* Bail out if all the primes used for sieving are
       not all held by process 0 */
@@ -98,7 +102,10 @@ int main (int argc, char *argv[])
    */
    prime = 3;
    index = 0;
-   do{
+   while (index < parent_size)
+   {
+      prime = index * 2 + 3;
+      index++;
       if (prime * prime > low_value)
          first = ((prime * prime) - low_value) / 2;
       else {
@@ -109,10 +116,26 @@ int main (int argc, char *argv[])
             }
       }
       for (i = first; i < parent_size; i += prime) parent_primes[i] = 1;
-      while (parent_primes[++index]);
-      prime = index * 2 + 3;
-   } while (prime * prime <= high_value);
+      while (index < parent_size && parent_primes[index]) {
+         index++;
+      }
+   }
 
+   count = 0;
+   for (i = 0; i < parent_size; i++) {
+      if (parent_primes[i])   count++;
+   }
+   prcache_size = count;
+   primes_cache = (LLong *) malloc (count);
+   if (primes_cache == NULL) {
+      printf ("Cannot allocate enough memory\n");
+      MPI_Finalize();
+      exit (1);
+   }
+   count = 0;
+   for (i = 0; i < parent_size; i++) {
+      if (parent_primes[i])   primes_cache[count++] = i * 2 + 3;
+   }
 
    /* Allocate this process's share of the array. */
 
@@ -134,9 +157,8 @@ int main (int argc, char *argv[])
 
       high_block_value = MIN(high_value, low_block_value + (block_size - 1) * 2);
       index = 0;
-      prime = index * 2 + 3;
-
-      do {
+      while(index < prcache_size) {
+         prime = primes_cache[index++];
          if (prime * prime > low_block_value)
             first = (prime * prime - low_block_value) / 2;
          else {
@@ -153,11 +175,7 @@ int main (int argc, char *argv[])
          for (i = first + outer_i * block_size; i*2 + low_value <= high_block_value; i += prime) {
             marked[i] = 1;
          };
-
-         //find next prime to seive
-         while (parent_primes[++index]);
-         prime = index * 2 + 3;
-      } while (prime * prime <= high_block_value);
+      }
    }
 
 
