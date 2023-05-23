@@ -34,8 +34,7 @@ int main (int argc, char *argv[])
    LLong  size;         /* Elements in 'marked' */
    char  *parent_primes;/* Primes to sieve */
    LLong  parent_size;  /* Parent primes size*/
-   int    block_size;   /* Block size for a cache, (Bytes) */
-   int    line_size;    /* How many lines the cache has */
+   int    block_size;   /* Block size for a cache */
    LLong  outer_i;      /* Designed for increase cache hit, control outer loop index */
    LLong  low_block_value; /* Designed for increase cache hit, current blcok low_value */
    LLong  high_block_value;/* Designed for increase cache hit, current blcok low_value */  
@@ -48,14 +47,14 @@ int main (int argc, char *argv[])
    MPI_Barrier(MPI_COMM_WORLD);
    elapsed_time = -MPI_Wtime();
 
-   if (argc != 2) {
+   if (argc != 3) {
       if (!id) printf ("Command line: %s <m>\n", argv[0]);
       MPI_Finalize();
       exit (1);
    }
 
    n = atoll(argv[1]);
-
+   block_size = atoi(argv[1]);
    /* Figure out this process's share of the array, as
       well as the integers represented by the first and
       last array elements */
@@ -121,8 +120,6 @@ int main (int argc, char *argv[])
    high_value = 1 + (id+1)*((n-1)/2)/p*2;
    size = (high_value - low_value)/2 + 1;
 
-   block_size = 512;
-   line_size = 4;
    marked = (char *) malloc (size);
 
    if (marked == NULL) {
@@ -133,9 +130,9 @@ int main (int argc, char *argv[])
 
    for (i = 0; i < size; i++) marked[i] = 0;
 
-   for (outer_i = 0, low_block_value = outer_i * block_size * line_size * 2 + low_value; low_block_value <= high_value; ++outer_i,low_block_value = outer_i * block_size * line_size * 2 + low_value) {
+   for (outer_i = 0, low_block_value = outer_i * block_size * 2 + low_value; low_block_value <= high_value; ++outer_i,low_block_value = outer_i * block_size * 2 + low_value) {
 
-      high_block_value = MIN(high_value, low_block_value + (block_size * line_size - 1) * 2);
+      high_block_value = MIN(high_value, low_block_value + (block_size - 1) * 2);
       index = 0;
       prime = index * 2 + 3;
 
@@ -153,7 +150,7 @@ int main (int argc, char *argv[])
             }
          }
 
-         for (i = first + outer_i * block_size * line_size; i*2 + low_value <= high_block_value; i += prime) {
+         for (i = first + outer_i * block_size; i*2 + low_value <= high_block_value; i += prime) {
             marked[i] = 1;
          };
 
