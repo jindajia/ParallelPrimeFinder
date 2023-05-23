@@ -126,7 +126,7 @@ int main (int argc, char *argv[])
 
    count = 0;
    for (i = 0; i < parent_size; i++) {
-      if (parent_primes[i])   count++;
+      if (!parent_primes[i])   count++;
    }
 
    printf("rank = %d mark finished count = %lld \n",id, count);
@@ -141,7 +141,7 @@ int main (int argc, char *argv[])
    }
    count = 0;
    for (i = 0; i < parent_size; i++) {
-      if (parent_primes[i])   primes_cache[count++] = i * 2 + 3;
+      if (!parent_primes[i])   primes_cache[count++] = i * 2 + 3;
    }
 
    /* Allocate this process's share of the array. */
