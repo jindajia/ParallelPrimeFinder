@@ -163,6 +163,8 @@ int main (int argc, char *argv[])
    for (outer_i = 0, low_block_value = outer_i * block_size * 2 + low_value; low_block_value <= high_value; ++outer_i,low_block_value = outer_i * block_size * 2 + low_value) {
 
       high_block_value = MIN(high_value, low_block_value + (block_size - 1) * 2);
+      printf("rank = %d low_block_value = %lld high_block_value = %lld outer_i = %lld \n",id, low_block_value, high_block_value, outer_i);
+      fflush(stdout);
       index = 0;
       while(index < prcache_size) {
          prime = primes_cache[index++];
