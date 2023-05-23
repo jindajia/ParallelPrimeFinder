@@ -57,7 +57,7 @@ int main (int argc, char *argv[])
    }
 
    n = atoll(argv[1]);
-   block_size = atoi(argv[1]);
+   block_size = atoi(argv[2]);
    /* Figure out this process's share of the array, as
       well as the integers represented by the first and
       last array elements */
