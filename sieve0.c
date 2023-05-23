@@ -59,14 +59,6 @@ int main (int argc, char *argv[])
       We want to delete Even numbers.
       So we only have (n-1)/2 elements.
       */
-   
-
-   low_value = 3;
-   high_value = (n-1)/2/p*2 + 1;
-   parent_size = ((n-1)/2/p*2 - 2)/2 + 1;
-
-   /* Bail out if all the primes used for sieving are
-      not all held by process 0 */
 
    proc0_size = 1+(n-1)/2/p*2;
 
@@ -75,6 +67,10 @@ int main (int argc, char *argv[])
       MPI_Finalize();
       exit (1);
    }
+
+   low_value = 3;
+   high_value = (long long) sqrt((double) n) - ((long long) sqrt((double) n) + 1) % 2 
+   parent_size = (high_value - low_value)/2 + 1;
 
    /* Allocate parent_primes to seive */
    parent_primes = (char *) malloc (parent_size);
@@ -88,7 +84,7 @@ int main (int argc, char *argv[])
    for (i = 0; i < parent_size; i++) parent_primes[i] = 0;
 
    /* 
-      sequential mark parent_primes 
+      Sequentially mark parent_primes 
       low_value for parent_primes is 3
       high_value for parent_primes is (n-1)/2/p*2 + 1
    */
