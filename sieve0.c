@@ -125,6 +125,10 @@ int main (int argc, char *argv[])
    for (i = 0; i < parent_size; i++) {
       if (parent_primes[i])   count++;
    }
+
+   printf("rank = %d mark finished count = %lld \n",id, count);
+   fflush(stdout);
+   
    prcache_size = count;
    primes_cache = (LLong *) malloc (count);
    if (primes_cache == NULL) {
