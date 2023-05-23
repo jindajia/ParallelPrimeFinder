@@ -69,7 +69,7 @@ int main (int argc, char *argv[])
    }
 
    low_value = 3;
-   high_value = (long long) sqrt((double) n) - ((long long) sqrt((double) n) + 1) % 2 
+   high_value = (long long) sqrt((double) n) - ((long long) sqrt((double) n) + 1) % 2;
    parent_size = (high_value - low_value)/2 + 1;
 
    /* Allocate parent_primes to seive */
