@@ -133,7 +133,7 @@ int main (int argc, char *argv[])
    fflush(stdout);
 
    prcache_size = count;
-   primes_cache = (LLong *) malloc (count);
+   primes_cache = (LLong *) malloc (count * sizeof(long long));
    if (primes_cache == NULL) {
       printf ("Cannot allocate enough memory\n");
       MPI_Finalize();
