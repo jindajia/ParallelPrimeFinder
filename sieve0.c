@@ -157,6 +157,8 @@ int main (int argc, char *argv[])
       MPI_Finalize();
       exit (1);
    }
+   printf("rank = %d size = %lld \n",id, size);
+   fflush(stdout);
 
    for (i = 0; i < size; i++) marked[i] = 0;
    printf("rank = %d marked finish \n",id);
