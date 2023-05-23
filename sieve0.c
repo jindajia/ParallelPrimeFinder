@@ -166,6 +166,7 @@ int main (int argc, char *argv[])
       index = 0;
       while(index < prcache_size) {
          prime = primes_cache[index++];
+         if (prime * prime > high_block_value) break;
          if (prime * prime > low_block_value)
             first = (prime * prime - low_block_value) / 2;
          else {
