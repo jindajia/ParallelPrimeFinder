@@ -157,7 +157,7 @@ int main (int argc, char *argv[])
       MPI_Finalize();
       exit (1);
    }
-   printf("rank = %d size = %lld \n",id, size);
+   printf("rank = %d high_value = %lld low_value = %lld size = %lld \n",id, high_value, low_value, size);
    fflush(stdout);
 
    for (i = 0; i < size; i++) marked[i] = 0;
