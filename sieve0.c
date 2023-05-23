@@ -128,7 +128,7 @@ int main (int argc, char *argv[])
 
    printf("rank = %d mark finished count = %lld \n",id, count);
    fflush(stdout);
-   
+
    prcache_size = count;
    primes_cache = (LLong *) malloc (count);
    if (primes_cache == NULL) {
@@ -186,6 +186,8 @@ int main (int argc, char *argv[])
    count = 0;
    for (i = 0; i < size; i++)
       if (!marked[i]) count++;
+   printf("rank = %d low_value = %lld high_value = %lld count = %lld \n",id, low_value, high_value, count);
+   fflush(stdout);
    if (p > 1) MPI_Reduce (&count, &global_count, 1, MPI_LONG_LONG, MPI_SUM,
       0, MPI_COMM_WORLD);
 
