@@ -95,6 +95,9 @@ int main (int argc, char *argv[])
 
    for (i = 0; i < parent_size; i++) parent_primes[i] = 0;
 
+   printf("rank = %d parent_size = %lld \n",id, parent_size);
+   fflush(stdout);
+
    /* 
       sequential mark parent_primes 
       low_value for parent_primes is 3
