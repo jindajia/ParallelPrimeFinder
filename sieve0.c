@@ -34,6 +34,11 @@ int main (int argc, char *argv[])
    LLong  size;         /* Elements in 'marked' */
    char  *parent_primes;/* Primes to sieve */
    LLong  parent_size;  /* Parent primes size*/
+   int    block_size;   /* Block size for a cache, (Bytes) */
+   int    line_size;    /* How many lines the cache has */
+   LLong  outer_i;      /* Designed for increase cache hit, control outer loop index */
+   LLong  low_block_value; /* Designed for increase cache hit, current blcok low_value */
+   LLong  high_block_value;/* Designed for increase cache hit, current blcok low_value */  
    MPI_Init (&argc, &argv);
 
    /* Start the timer */
@@ -115,9 +120,9 @@ int main (int argc, char *argv[])
    low_value = 3 + id*((n-1)/2)/p*2;
    high_value = 1 + (id+1)*((n-1)/2)/p*2;
    size = (high_value - low_value)/2 + 1;
-   index = 0;
-   prime = index * 2 + 3;
 
+   block_size = 512;
+   line_size = 4;
    marked = (char *) malloc (size);
 
    if (marked == NULL) {
@@ -128,24 +133,37 @@ int main (int argc, char *argv[])
 
    for (i = 0; i < size; i++) marked[i] = 0;
 
-   do {
-      if (prime * prime > low_value)
-         first = (prime * prime - low_value) / 2;
-      else {
-         if (!(low_value % prime)) first = 0;
+   for (outer_i = 0, low_block_value = outer_i * block_size * line_size * 2 + low_value; low_block_value <= high_value; ++outer_i,low_block_value = outer_i * block_size * line_size * 2 + low_value) {
+
+      high_block_value = MIN(high_value, low_block_value + (block_size * line_size - 1) * 2);
+      index = 0;
+      prime = index * 2 + 3;
+
+      do {
+         if (prime * prime > low_block_value)
+            first = (prime * prime - low_block_value) / 2;
          else {
-            if ( (prime - (low_value) % prime) % 2 == 0) {
-               first = (prime - (low_value) % prime) / 2;
-            } else {
-               first = (prime * 2 - (low_value) % prime) / 2;
+            if (!(low_block_value % prime)) first = 0;
+            else {
+               if ( (prime - (low_block_value) % prime) % 2 == 0) {
+                  first = (prime - (low_block_value) % prime) / 2;
+               } else {
+                  first = (prime * 2 - (low_block_value) % prime) / 2;
+               }
             }
          }
-      }
-      for (i = first; i < size; i += prime) marked[i] = 1;
-      //find next prime to seive
-      while (parent_primes[++index]);
-      prime = index * 2 + 3;
-   } while (prime * prime <= n);
+
+         for (i = first + outer_i * block_size * line_size; i*2 + low_value <= high_block_value; i += prime) {
+            marked[i] = 1;
+         };
+
+         //find next prime to seive
+         while (parent_primes[++index]);
+         prime = index * 2 + 3;
+      } while (prime * prime <= high_block_value);
+   }
+
+
    count = 0;
    for (i = 0; i < size; i++)
       if (!marked[i]) count++;
