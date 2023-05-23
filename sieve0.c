@@ -95,9 +95,6 @@ int main (int argc, char *argv[])
 
    for (i = 0; i < parent_size; i++) parent_primes[i] = 0;
 
-   printf("rank = %d parent_size = %lld low_value = %lld high_value = %lld \n",id, parent_size, low_value, high_value);
-   fflush(stdout);
-
    /* 
       sequential mark parent_primes 
       low_value for parent_primes is 3
@@ -129,9 +126,6 @@ int main (int argc, char *argv[])
       if (!parent_primes[i])   count++;
    }
 
-   printf("rank = %d mark finished count = %lld \n",id, count);
-   fflush(stdout);
-
    prcache_size = count;
    primes_cache = (LLong *) malloc (count * sizeof(long long));
    if (primes_cache == NULL) {
@@ -157,17 +151,13 @@ int main (int argc, char *argv[])
       MPI_Finalize();
       exit (1);
    }
-   printf("rank = %d high_value = %lld low_value = %lld size = %lld \n",id, high_value, low_value, size);
-   fflush(stdout);
 
    for (i = 0; i < size; i++) marked[i] = 0;
-   printf("rank = %d marked finish \n",id);
-   fflush(stdout);
+
    for (outer_i = 0, low_block_value = outer_i * block_size * 2 + low_value; low_block_value <= high_value; ++outer_i,low_block_value = outer_i * block_size * 2 + low_value) {
 
       high_block_value = MIN(high_value, low_block_value + (block_size - 1) * 2);
-      printf("rank = %d low_block_value = %lld high_block_value = %lld outer_i = %lld \n",id, low_block_value, high_block_value, outer_i);
-      fflush(stdout);
+
       index = 0;
       while(index < prcache_size) {
          prime = primes_cache[index++];
@@ -195,8 +185,7 @@ int main (int argc, char *argv[])
    count = 0;
    for (i = 0; i < size; i++)
       if (!marked[i]) count++;
-   printf("rank = %d low_value = %lld high_value = %lld count = %lld \n",id, low_value, high_value, count);
-   fflush(stdout);
+
    if (p > 1) MPI_Reduce (&count, &global_count, 1, MPI_LONG_LONG, MPI_SUM,
       0, MPI_COMM_WORLD);
 
