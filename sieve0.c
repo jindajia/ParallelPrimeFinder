@@ -159,7 +159,8 @@ int main (int argc, char *argv[])
    }
 
    for (i = 0; i < size; i++) marked[i] = 0;
-
+   printf("rank = %d marked finish \n",id);
+   fflush(stdout);
    for (outer_i = 0, low_block_value = outer_i * block_size * 2 + low_value; low_block_value <= high_value; ++outer_i,low_block_value = outer_i * block_size * 2 + low_value) {
 
       high_block_value = MIN(high_value, low_block_value + (block_size - 1) * 2);
