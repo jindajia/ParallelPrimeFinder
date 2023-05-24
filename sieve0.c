@@ -38,6 +38,7 @@ int main (int argc, char *argv[])
    LLong  outer_i;      /* Designed for increase cache hit, control outer loop index */
    LLong  low_block_value; /* Designed for increase cache hit, current blcok low_value */
    LLong  high_block_value;/* Designed for increase cache hit, current blcok low_value */  
+   LLong  sqrt_N;
    MPI_Init (&argc, &argv);
 
    /* Start the timer */
@@ -65,9 +66,10 @@ int main (int argc, char *argv[])
       */
    
 
+   sqrt_N = (long long) sqrt((double) n);
    low_value = 3;
-   high_value = (n-1)/2/p*2 + 1;
-   parent_size = ((n-1)/2/p*2 - 2)/2 + 1;
+   high_value = sqrt_N - (sqrt_N + 1) % 2;
+   parent_size = (high_value - low_value) / 2 + 1;
 
    /* Bail out if all the primes used for sieving are
       not all held by process 0 */
@@ -130,8 +132,7 @@ int main (int argc, char *argv[])
 
    for (i = 0; i < size; i++) marked[i] = 0;
 
-   for (outer_i = 0, low_block_value = outer_i * block_size * 2 + low_value; low_block_value <= high_value; ++outer_i,low_block_value = outer_i * block_size * 2 + low_value) {
-
+   for (low_block_value = low_value; low_block_value <= high_value; low_block_value += block_size * 2) {
       high_block_value = MIN(high_value, low_block_value + (block_size - 1) * 2);
       index = 0;
       prime = index * 2 + 3;
@@ -150,7 +151,7 @@ int main (int argc, char *argv[])
             }
          }
 
-         for (i = first + outer_i * block_size; i*2 + low_value <= high_block_value; i += prime) {
+         for (i = first + (low_block_value - low_value) / 2; i <= (high_block_value - low_value) / 2; i += prime) {
             marked[i] = 1;
          };
 
