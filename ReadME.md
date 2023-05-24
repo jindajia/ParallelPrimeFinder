@@ -26,14 +26,13 @@ After mark all mutiples of current subarray, we need to get next prime, however 
 sieve4_update is an updated version of sieve4, the only difference is sieve4_update use another array to store primes used to sieve.
 
 ### 3. Benchmark
-
+[Test Results](https://github.com/jindajia/ParallelPrimeFinder/blob/main/test_result.md)  
 #### Environment
 [**矩阵云**](https://matpool.com)
-Intel Xeon Platinum 8260 CPU
-16vCPU
-RAM（GB）80
-HDD（GB）200
-[Test Results](https://github.com/jindajia/ParallelPrimeFinder/blob/main/test_result.md)
+Intel Xeon Platinum 8260 CPU  
+16vCPU  
+RAM（GB）80  
+HDD（GB）200  
 ![Chart](https://github.com/jindajia/ParallelPrimeFinder/raw/main/Figure_1.png)
 
 
