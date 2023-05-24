@@ -1,20 +1,3 @@
-(myconda) root@PbjbMD:~/Desktop/git/ParallelPrimeFinder# mpicc sieve0.c -o my_program -lm
-(myconda) root@PbjbMD:~/Desktop/git/ParallelPrimeFinder# mpirun --allow-run-as-root -np 4 my_program 10000000000
-There are 455052511 primes less than or equal to 10000000000
-SIEVE (4)  93.368185
-(myconda) root@PbjbMD:~/Desktop/git/ParallelPrimeFinder# mpirun --allow-run-as-root -np 8 my_program 10000000000
-There are 455052511 primes less than or equal to 10000000000
-SIEVE (8)  52.963621
-(myconda) root@PbjbMD:~/Desktop/git/ParallelPrimeFinder# mpirun --allow-run-as-root -np 2 my_program 10000000000
-There are 455052511 primes less than or equal to 10000000000
-SIEVE (2) 180.255660
-
-jiajindadeMacBook-Pro:ParallelPrimeFinder jiajinda$ mpirun -np 2 program 1000000000
-There are 50847534 primes less than or equal to 1000000000
-SIEVE (2)  11.846289
-jiajindadeMacBook-Pro:ParallelPrimeFinder jiajinda$ mpirun -np 1 program 1000000000
-There are 0 primes less than or equal to 1000000000
-SIEVE (1)  17.345623
 
 Environment:
 矩阵云 https://matpool.com/
