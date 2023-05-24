@@ -33,7 +33,7 @@ Intel Xeon Platinum 8260 CPU
 16vCPU
 RAM（GB）80
 HDD（GB）200
-[Test Results](https://github.com/jindajia/ParallelPrimeFinder/blob/main/Part1%20test%20report.md)
+[Test Results]([https://github.com/jindajia/ParallelPrimeFinder/blob/main/Part1%20test%20report.md](https://github.com/jindajia/ParallelPrimeFinder/blob/main/test_result.md))
 ![Chart](https://github.com/jindajia/ParallelPrimeFinder/raw/main/Figure_1.png)
 
 
