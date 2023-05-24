@@ -214,7 +214,7 @@ The improved Part 4 utilizes a contiguous array to pre-store the necessary prime
 
 **Benchmark** 
 Depicting the results of these five different test cases in a chart, as shown below.
-![Chart](https://github.com/jindajia/ParallelPrimeFinder/raw/main/Figure_1.png)
+![Chart](Fiugre/Figure_1.png)
 
 ### Future Improvement Maybe
 **Pre store prime*prime**
