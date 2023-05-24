@@ -33,21 +33,13 @@ mpirun -np <process_size> program <max_number> <cache_block_size>
 //example run for part4
 mpirun -np 32 program4 10000000000 32768
 ```
-## 2. Part4 - Optimized Version
-For Part4, I  segmented the array, each subarray should have L1 cache size number of elements.  This will increase cache hit probability.    
-
-However, reorganized loop will lead to another problem.  
-
-After mark all mutiples of current subarray, we need to get next prime, however when parent_primes size is lage, **<while (parent_primes[++index])>** , this way is not efficient. Because it will be excuted a lot of times.  A better way to do that is using an array to add every primes smaller than sqrt(n);  
-
-sieve4_update is an updated version of sieve4, the only difference is sieve4_update use another array to store primes used to sieve.
-## 2. How to design
+## 2. Implementation
 #### Part 2 -  delete even number
 We know that, all even number except 2 are not primes, so keep these members in our array is not effcient for memory and for time. We can simply remove all these members include 2, because 2's mutiplies are even, so 2 is no use during seive process.  
 Remove even from array can save half of memory. Take a look of how to arrange index.
 ##### Array Index
 ```
-index:  					0  1  2  3  4  5  6  7  8  9 10
+index:                      0  1  2  3  4  5  6  7  8  9 10
 number_before_remove_even:  2  3  4  5  6  7  8  9 10 11 12
 number_after_remove_even.   3  5  7  9 11 13 15 17 19 21 23
 ```
@@ -95,9 +87,9 @@ We know size of data type **Int** are 4 bytes, it's range is from -2,147,483,648
 A **long long type** data  will guaranteed a minumim size with 8bytes. It will cover a range from -2<sup>63</sup> to 2<sup>63</sup> -1.  
 Belowed table showing the running time with different number of processors. 
 ```
-Processors	2			4			6		   8		  12		 
+Processors	2			   4			   6		     8		    12		 
 Time(sec)   217.066358  114.980206  79.651480  60.756687  44.913472  
-Processors	16			24			32		   40		  48		
+Processors	16			   24			   32		     40		    48		
 Time(sec)   38.630366   44.896393   43.708701  41.726906  45.551066
 ```
 When the number of processors is less than 16, doubling processors roughly reduces the running time to half of the orignal time.  
@@ -105,8 +97,8 @@ However, when the number of processes exceeds 16, simply increasing the number o
 **Boundary.** With much more processors, processor0 will take more time to broadcast next prime. Suppose the BroadCast Algorithm is Binary tree algorithm.
 For instance, when we only have 4 processors, 2 iterations is enough, when the number of processors is 100, it will take 6 iterations.  
 ```
-Iterations		1		2		3	   4	  5		6		 
-Max Receivers   3  		7		15	   31	  63 	127		
+Iterations		 1		 2		3	   4	  5		6		 
+Max Receivers   3  	 7		15	   31	  63 	   127		
 ```
 **Two main time-consuming factors**
 For a single processor i, it has two main time consuming factors during seiving. 
@@ -131,9 +123,9 @@ Suppose we have a  **n = 10<sup>10</sup>**, processor0 need to broadcast all pri
 The table belowed is the testing result after deleting even number from array.  
 Comparing belowed chart, we can find that with same number of processors, Part2's running time is roughly half of Part1's.
 ```
-Processors	2			8			16			32
-Part1		217.066358  60.756687 	38.630366	43.708701
-Part2		104.036097  30.222937 	19.798627	22.980402
+Processors	2			   8			1  6			   32
+Part1		   217.066358  60.756687 	38.630366	43.708701
+Part2		   104.036097  30.222937 	19.798627	22.980402
 ```
 ##### Calculations
 We have already konwn that, two main time-consuming factors are **loop of marking** and **broadcasting**
@@ -146,9 +138,9 @@ Suppose n = 100, p = 2 pme = 3
 We only care about process 1
 Part1: first_element = 51 last element = 100 length = 50
 Part2: first_element = 51 last element = 99  length = 25
-index:  					0  1  2  3  4  5  6  7  8  9 10 ...  49
+index:  					   0  1  2  3  4  5  6  7  8  9  10 ...  49
 Part1:					   51 52 53 54 55 56 57 58 59 60 61 ... 100
-index:  					0  1  2  3  4  5  6  7  8  9 10 ...  24
+index:  					   0  1  2  3  4  5  6  7  8  9  10 ...  24
 Part2:					   51 53 55 57 59 61 63 65 67 69 71 ...  99
 ```
 Part1 will mark elements representing [51, 54, 57, 60, 63, 66 ... 99], total 16 members.
@@ -160,12 +152,12 @@ When there are more processor, each time of broadcasting will take more iteratio
 because each iteration takes roughly same time, increasing processors will also increasing times on broadcasting. The single broadcast time rises logarithmically.  
 Let's take a look of our result.
 ```
-Processors	2			4		   6		  8		  	 12		 
-Part2		104.036097  55.539209  35.828890  30.222937  24.481947
-Part3	    104.424584  55.730943  38.704724  29.696898  21.812350
-Processors	16			24		   32		  40		 48		
-Part2		19.798627   23.285952  22.980402  23.521662  25.851293
-Part3	    18.949695   20.028688  19.638265  20.145718  18.619690  
+Processors	2			   4		      6		     8		  	   12		 
+Part2		   104.036097  55.539209  35.828890   30.222937    24.481947
+Part3	      104.424584  55.730943  38.704724   29.696898    21.812350
+Processors	16			   24		      32		     40		      48		
+Part2		   19.798627   23.285952   22.980402  23.521662    25.851293
+Part3	      18.949695   20.028688   19.638265  20.145718    18.619690  
 ```
 We can see that, when the number of  processors are less or equal than 6, Part2 is slightly faster than Part3. However, when processors more than 6, Part3 will save more excution time.  
 **Size of Processors** In the previous part, we talked about iteration times when broadcasting messages. When the number of processors is large, each time of broadcasting takes more time.  
@@ -179,12 +171,12 @@ After Part3, we already removed broadcasting mechanism, so we only care about **
 There are also two factors when marking array. **First**, **how many loops it will take** when marking array is influential. **Second**, when marking an element, we simlpy set this element's value to 1. To do that, we need to access this element. So how long will **a single time of access operation takes**  affecting  marking time.
 To reduce the access time, I attempted to increase the L1 cache hit rate. In my running environment, the Intel processor had an L1 cache size of 32K (in bytes). Therefore, I divided the arrays assigned to each process into segments of length 32K, and the test results are as follows.
 ```
-Processors	2			4		   6		  8		  	 12		 
-Part3	    104.424584  55.730943  38.704724  29.696898  21.812350
-Part4	    71.998348   37.379297  25.333567  15.576962  13.478113
-Processors	16			24		   32		  40		 48		
-Part3	    18.949695   20.028688  19.638265  20.145718  18.619690  
-Part4	    10.231363   10.063106   9.430258   9.483221    9.317979
+Processors	2			   4		     6		    8		  	   12		 
+Part3	      104.424584  55.730943  38.704724  29.696898  21.812350
+Part4	      71.998348   37.379297  25.333567  15.576962  13.478113
+Processors	16			   24		     32		    40		   48		
+Part3	      18.949695   20.028688  19.638265  20.145718  18.619690  
+Part4	      10.231363   10.063106   9.430258   9.483221    9.317979
 ```
 We can see that, after increasing hiting rate, the execution time will reduced significanly, when there are 4 processors, the running time will be reduced 33% of the original time. When the number of processors are more than 24, running time will be reduced 50%.  
 
@@ -209,14 +201,15 @@ $$z = p_{n+1}- p_{n} \approx \ln_{}{n} ~ (n \to \infty )$$ Because we segmented 
 $$ u \approx l/s*(p_{n+1}- p_{n}) ~(n ~from~ 1~ to\sqrt{n}  )$$
 **In advance, store the required prime numbers in a contiguous array.** After the improvement, the program yielded the following test results.
 ```
-Processors	2			4		   6		  8		  	 12		 
-Part4	    71.998348   37.379297  25.333567  15.576962  13.478113
+Processors	 2			    4		      6		     8		  	 12		 
+Part4	       71.998348   37.379297  25.333567  15.576962  13.478113
 Update	    59.681592   30.604949  21.212724  15.576962  10.892023
-Processors	16			24		   32		  40		 48		
-Part4	    10.231363   10.063106  9.430258   9.483221   9.317979
+Processors	 16			 24		   32		     40		    48		
+Part4	       10.231363   10.063106  9.430258   9.483221   9.317979
 Update	    8.259007    8.499409   7.788888   7.825964	 7.800874
 ```
-The improved Part 4 utilizes a contiguous array to pre-store the necessary prime data. We observe a 17% reduction in the algorithm's runtime compared to the original version.
+The improved Part 4 utilizes a contiguous array to pre-store the necessary prime data. We observe a 17% reduction in the algorithm's runtime compared to the original version.  
+
 **Benchmark** 
 Depicting the results of these five different test cases in a chart, as shown below.
 ![Chart](https://github.com/jindajia/ParallelPrimeFinder/raw/main/Figure_1.png)
