@@ -94,6 +94,7 @@ Belowed table showing the running time with different number of processors.
 
 When the number of processors is less than 16, doubling processors roughly reduces the running time to half of the orignal time.  
 However, when the number of processes exceeds 16, simply increasing the number of processes does not reduce the execution time; instead, it may cause a slight increase in the execution time.  
+![Chart](Figure/Part1.png)
 **Boundary.** With much more processors, processor0 will take more time to broadcast next prime. Suppose the BroadCast Algorithm is Binary tree algorithm.
 For instance, when we only have 4 processors, 2 iterations is enough, when the number of processors is 100, it will take 6 iterations.  
 | Iterations | 1 | 2 | 3 | 4 | 5 | 6 |
@@ -119,13 +120,15 @@ However, the broadcasting time is independent of the size of the prime values. A
 **Accumulation of Broadcasting Time**
 When n is very large, processor0 will broadcast more time. With all these times accumulated, it may take a lot. 
 Suppose we have a  **n = 10<sup>10</sup>**, processor0 need to broadcast all primes within **sqrt(n) = 10<sup>5</sup>** to others. After calculation, there are 1229 primes within 10^5, so processor0 will broadcast  1228 times. The total delay caused by broadcast is D.$$D = 1228 * d = 1228*x \left \lfloor  \log_{2}{p}  \right \rfloor$$
-#### Part2 - Deleting even number
+#### Part2 - Deleting even numbers
 The table belowed is the testing result after deleting even number from array.  
 Comparing belowed chart, we can find that with same number of processors, Part2's running time is roughly half of Part1's.
 | Processors | 2  | 8  | 16 | 32 |
 |------------|----|----|----|----|
 | Part1      | 217.066358 | 60.756687 | 38.630366 | 43.708701 |
 | Part2      | 104.036097 | 30.222937 | 19.798627 | 22.980402 |
+
+![Chart](Figure/Part2_vs_Part1.png)
 
 ##### Calculations
 We have already konwn that, two main time-consuming factors are **loop of marking** and **broadcasting**
@@ -161,6 +164,8 @@ Let's take a look of our result.
 | Part2      | 19.798627 | 23.285952 | 22.980402 | 23.521662 | 25.851293 |
 | Part3      | 18.949695 | 20.028688 | 19.638265 | 20.145718 | 18.619690 |
 
+![Chart](Figure/Part2vsPart3.png)
+
 We can see that, when the number of  processors are less or equal than 6, Part2 is slightly faster than Part3. However, when processors more than 6, Part3 will save more excution time.  
 **Size of Processors** In the previous part, we talked about iteration times when broadcasting messages. When the number of processors is large, each time of broadcasting takes more time.  
 **Why Part2 is slightly faster than Part3 when processors is not to many?**
@@ -179,6 +184,8 @@ To reduce the access time, I attempted to increase the L1 cache hit rate. In my 
 | Processors | 16 | 24 | 32 | 40 | 48 |
 | Part3      | 18.949695 | 20.028688 | 19.638265 | 20.145718 | 18.619690 |
 | Part4      | 10.231363 | 10.063106 | 9.430258 | 9.483221 | 9.317979 |
+
+![Chart](Figure/Part3vsPart4.png)
 
 We can see that, after increasing hiting rate, the execution time will reduced significanly, when there are 4 processors, the running time will be reduced 33% of the original time. When the number of processors are more than 24, running time will be reduced 50%.  
 
@@ -210,11 +217,13 @@ $$ u \approx l/s*(p_{n+1}- p_{n}) ~(n ~from~ 1~ to\sqrt{n}  )$$
 | Part4      | 10.231363 | 10.063106 | 9.430258 | 9.483221 | 9.317979 |
 | Update     | 8.259007 | 8.499409 | 7.788888 | 7.825964 | 7.800874 |
 
+![Chart](Figure/Part4_update.png)
+
 The improved Part 4 utilizes a contiguous array to pre-store the necessary prime data. We observe a 17% reduction in the algorithm's runtime compared to the original version.  
 
 **Benchmark** 
 Depicting the results of these five different test cases in a chart, as shown below.
-![Chart](Fiugre/Figure_1.png)
+![Chart](Figure/Figure_1.png)
 
 ### Future Improvement Maybe
 **Pre store prime*prime**
