@@ -208,8 +208,12 @@ With these results, we can see that, when the amount of processors are  large, t
 
 When the number of processes is large, increasing the cache hit rate can lead to an efficiency close to 100%. However, why is it that when the number of processes is small, the performance improvement does not reach 100%, but only around 70%?   
 
-My hypothesis is as follows: for a fixed value of `n`, with a larger number of processes, the length of the array assigned to each process becomes relatively shorter. Let's assume that the array length of process `i` is `l`, and the chosen segmentation length is `s` (in this experiment, I set `s` to 32K). Since `s` is fixed, when the number of processes is small, `l` becomes particularly large, resulting in a very small ratio between `s` and `l`.  
-$$ segment ratio = s:l $$  
+**My hypothesis** 
+
+For a fixed value of `n`, with a larger number of processes, the length of the array assigned to each process becomes relatively shorter. Let's assume that the array length of process `i` is `l`, and the chosen segmentation length is `s` (in this experiment, I set `s` to 32K). Since `s` is fixed, when the number of processes is small, `l` becomes particularly large, resulting in a very small ratio between `s` and `l`.  
+
+$$segment~~ ratio = s:l$$
+
 A smaller `segment ratio`  `s:l` implies a more scattered array segmentation. Consequently, the number of iterations increases relatively. Since at the start of each iteration, there are some works about initilization, some of which can be time-consuming, this leads to some overhead.
 
 **When the lenght of segmented array is too small, the time will increase**. 
@@ -226,9 +230,13 @@ In the previous part, we observed that, when the length of  segemented array is 
 We already known that for nth prime p<sub>n</sub>, we can get an estimation p<sub>n</sub>
 $$p_{n} \approx n\ln_{}{n} ~ (n \to \infty )$$
 When n is relatively big, finding next prime will take z times itereation. 
-$$z = p_{n+1}- p_{n} \approx \ln_{}{n} ~ (n \to \infty )$$ Because we segmented the original `l`length array to `s`length. Each sgemented array need find next prime used for sieving from `3 to sqrt(n)`, so the total itereation times will approximately be u.
-$$ u \approx l/s\*(p_{n+1}- p_{n}) ~(n ~from~ 1~ to\sqrt{n}  )$$
-**In advance, store the required prime numbers in a contiguous array.** After the improvement, the program yielded the following test results.
+$$z = p_{n+1}- p_{n} \approx \ln_{}{n} ~ (n \to \infty )$$ Because we segmented the original `l`length array to `s`length. Each sgemented array need find next prime used for sieving `from 3 to sqrt(n)`, so the total itereation times will approximately be u.  
+
+$$ u \approx l/s\*(p_{n+1}- p_{n}) ~(n ~from~ 1~ to\sqrt{n}  )$$  
+
+**Store required prime numbers in a contiguous array.**  
+
+After storing required prime in advance, the program yielded the following test results.
 | Processors | 2  | 4  | 6  | 8  | 12 |
 |------------|----|----|----|----|----|
 | Part4      | 71.998348 | 37.379297 | 25.333567 | 15.576962 | 13.478113 |
