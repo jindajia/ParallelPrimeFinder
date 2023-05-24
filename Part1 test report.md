@@ -21,7 +21,7 @@ Environment:
 Intel Xeon Platinum 8260 CPU
 16vCPU*小时
 内存（GB）
-32
+80
 硬盘（GB）
 200
 
@@ -122,3 +122,52 @@ process = 40
 time = 20.145718
 process = 48
 time = 18.619690
+
+Part4
+n = 10^10
+cache size = 32768
+
+version: normal
+process = 2
+time = 71.998348
+process = 4
+time = 37.379297
+process = 6
+time = 25.333567
+process = 8
+time = 15.576962
+process = 12
+time = 13.478113
+process = 16
+time = 10.231363
+process = 24
+time = 10.063106
+process = 32
+time = 9.430258
+process = 40
+time = 9.483221
+process = 48
+time = 9.317979
+
+
+version: update
+process = 2
+time = 59.681592
+process = 4
+time = 30.604949
+process = 6
+time = 21.212724
+process = 8
+time = 15.576962
+process = 12
+time = 10.892023
+process = 16
+time = 8.259007
+process = 24
+time = 8.499409
+process = 32
+time = 7.788888
+process = 40
+time = 7.825964
+process = 48
+time = 7.800874
