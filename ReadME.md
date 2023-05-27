@@ -106,7 +106,9 @@ Belowed table showing the running time with different number of cores.
 | Cores | 2   | 4   | 6   | 8   | 16  | 24  | 32  | 40  | 48  | 64  | 128 | 256 | 384 | 512 |
 |------------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
 | Time(sec)  | 131.340222 | 74.648559 | 69.071211 | 65.641554 | 33.30611 | 22.234583 | 19.148118 | 15.87571 | 14.331761 | 12.111386 | 6.971425 | 3.155523 | 2.10833 | 1.520438 |
-![Chart](https://github.com/jindajia/ParallelPrimeFinder/raw/main/Figure/Part1.png)It can be observed that as the number of cores increases, the running time decreases. 
+
+![Chart](https://github.com/jindajia/ParallelPrimeFinder/raw/main/Figure/Part1.png)
+It can be observed that as the number of cores increases, the running time decreases. 
 In an ideal scenario, when we double the number of cores, we expect the program's running time to be halved, or in other words, we hope to achieve a **linear relationship** between speed and number of cores. 
  $$speed = k \*p $$
 Speed represents the program's execution speed, p represents the number of cores, and k is a constant. Here, we can represent the value of speed using the measured data of running time, denoted as `t`, where `speed = 1/t`.
@@ -118,9 +120,12 @@ For a single process i, it has two main time consuming factors during sieving.
 **1. marking array 2. waiting for next prime**  
 
 **Marking Array**  
+
 Suppose process i just receive a new prime **pme** for sieving. Process will hold an array, it will represent **(n-1)/p** continous number. To sieve multiples of **pme**, we need to mark **m** elements. 
 $$m = (n-1)/p/pme $$ 
+
 **Waiting for next Prime**  
+
 When sieving primes, process0 need to broadcast next prime to all the other processs. 
 Suppose each broadcast iteration takes x sec, we have p processs, the last process will get the message later than the first reciver d seconds. 
 
@@ -152,6 +157,7 @@ Part1 will mark elements representing [51, 54, 57, 60, 63, 66 ... 99], total 16 
 Part2 will mark elements representing [51,       57,        63,          99], total   9 members.
 
 **Prediction**
+
 Based on the analysis above, we can speculate that the running time of Part2 will be half that of Part1, and the running speed will be twice as fast as Part1.
 
 **Result**
@@ -160,20 +166,26 @@ Part2 is the testing result after deleting even number from array.
 | Cores | 2   | 4   | 6   | 8   | 16  | 24  | 32  | 40  | 48  | 64  | 128 | 256 | 384 | 512 |
 |-------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
 | Part1 | 131.340222 | 74.648559 | 69.071211 | 65.641554 | 33.306110 | 22.234583 | 19.148118 | 15.875710 | 14.331761 | 12.111386 | 6.971425 | 3.155523 | 2.108330 | 1.520438 |
-| Part2 | 58.344136 | 36.322337 | 32.985175 | 30.329684 | 12.396677 | 11.436865 | 9.723257 | 8.230217 | 7.189540 | 6.156372 | 3.005913 | 1.425318 | 0.910984 | 0.624564 |  
+| Part2 | 58.344136 | 36.322337 | 32.985175 | 30.329684 | 12.396677 | 11.436865 | 9.723257 | 8.230217 | 7.189540 | 6.156372 | 3.005913 | 1.425318 | 0.910984 | 0.624564 |
+
 ![Part2_Part1_Speed](https://github.com/jindajia/ParallelPrimeFinder/raw/main/Figure/Part2vsPart1.png)
 ![Part2vsPart1](https://github.com/jindajia/ParallelPrimeFinder/raw/main/Figure/Part2_Part1_Speed.png)
+
 After conducting experiments with different numbers of cores and comparing the running speeds of Part1 and Part2, it was observed that the running speed of Part2 is approximately twice as fast as Part1. The experiment aligns with the expected results.  
 
 #### Part3 - Removing Broadcast
-**When Pme is Large**  
+
+**When Pme is Large**
+
 It is evident that the prime values used for sieving will become larger and larger. For n = 10<sup>10</sup>, the maximum prime value used for sieving is 10<sup>5</sup>. 
-Consequently, the number of elements we need to mark decreases as the prime values increase.    
-$$ m \downarrow \left (  pme\to \sqrt{n} \right ) $$  
+Consequently, the number of elements we need to mark decreases as the prime values increase.
+
+$$m \downarrow (pme \to \sqrt{n} )$$  
 
 However, the broadcasting time is independent of the size of the prime values. As the prime number used for filtering increases, the proportion of time spent on broadcasting also gradually increases, thereby affecting efficiency.
 
-**Accumulation of Broadcasting Time**  
+**Accumulation of Broadcasting Time**
+
 We already know that, process0 need to broadcast all primes within `sqrt(n)` to other processes. When n is large, process0 need to broadcast many times. 
 Suppose we have  **n = 10<sup>10</sup>**, process0 need to broadcast all primes within **sqrt(n) = 10<sup>5</sup>** to others. After calculation, there are 1229 primes within 10^5, so process0 will broadcast  1228 times. The total delay caused by broadcast is D.  
 $$D = 1228 \* d = 1228\*x \left \lfloor  \log_{2}{p}  \right \rfloor$$
@@ -182,15 +194,21 @@ $$D = 1228 \* d = 1228\*x \left \lfloor  \log_{2}{p}  \right \rfloor$$
 
 OpenMPI has offered 6 broadcasting algorithms which are basic linear, chain, pipeline, split binary tree, binary tree, binomial tree. In this report, we only care about binary tree algorithm, which is more common and efficient.
 When the number of processs increased, each time of broadcasting will take more iterations. $$iterations =  \left \lfloor  \log_{2}{p}  \right \rfloor$$
-Because each iteration takes roughly same amount of time, increasing processes will also increasing time on broadcasting. The single broadcast time rises logarithmically.  
+Because each iteration takes roughly same amount of time, increasing processes will also increasing time on broadcasting. The single broadcast time rises logarithmically.
+
 **Broadcasting**
+
 With much more processes, process0 will take more times to broadcast next prime. Suppose the Broadcast Algorithm is Binary tree broadcasting.
 For instance, when we only have 4 processes, 2 iterations is enough, when the number of processes is 100, it will take 6 iterations.  
+
 | Iterations | 1 | 2 | 3 | 4 | 5 | 6 |
 |------------|---|---|---|---|---|---|
 | Max Receivers | 3 | 7 | 15 | 31 | 63 | 127 |
+
 **Result**
+
 Let's take a look of our result. Part3 is the result after removing broadcasting mechanism.
+
 | Cores | 2   | 4   | 6   | 8   | 16  | 24  | 32  | 40  | 48  | 64  | 128 | 256 | 384 | 512 |
 |-------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
 | Part2 | 58.344136 | 36.322337 | 32.985175 | 30.329684 | 12.396677 | 11.436865 | 9.723257 | 8.230217 | 7.189540 | 6.156372 | 3.005913 | 1.425318 | 0.910984 | 0.624564 |
@@ -225,6 +243,7 @@ There are also two factors when marking array.
 **Second**, when marking an element, we simlpy set this element's value to 1 `(marked[i] = 1)`. To do that, we need to access this element. How long will **a single time of access operation takes** affects time spend on marking.  
 To reduce the access time, I attempted to increase the L1 cache hit rate. In my running environment, the process had an L1 cache size of 32K (in bytes).  
 Therefore, I divided the arrays assigned to each process into segments of length 32K, and the test results are as follows.
+
 | Cores | 2   | 4   | 6   | 8   | 16  | 24  | 32  | 40  | 48  | 64  | 128 | 256 | 384 | 512 |
 |-------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
 | Part3 | 63.402072 | 35.648821 | 30.611544 | 31.492965 | 15.529814 | 11.318744 | 9.435255 | 7.968104 | 6.596050 | 5.218180 | 2.919558 | 1.383011 | 0.850719 | 0.576781 |
@@ -266,29 +285,34 @@ $$p_{n} \approx n\ln_{}{n} ~ (n \to \infty )$$
 When n is relatively big, finding next prime will take z times itereation. 
 $$z = p_{n+1}- p_{n} \approx \ln_{}{n} ~ (n \to \infty )$$ Because we segmented the original `l`length array to `s`length. Each sgemented array need find next prime used for sieving `from 3 to sqrt(n)`, so the total itereation times will approximately be u.  
 
-$$ u \approx l/s\*(p_{n+1}- p_{n}) ~(n ~from~ 1~ to\sqrt{n}  )$$  
+$$ u \approx l/s\*(p_{n+1}- p_{n}) ~(n = ~ from ~ 1 ~ to \sqrt{n}  )$$  
 
 **Store required prime numbers in a contiguous array.**  
 
 After storing required prime in advance, the program yielded the following test results.
+
 | Cores | 2   | 4   | 6   | 8   | 16  | 24  | 32  | 40  | 48  | 64  | 128 | 256 | 384 | 512 |
 |-------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
 | Part4 | 55.732597 | 30.266950 | 20.624443 | 16.080076 | 8.027016 | 5.428616 | 3.839528 | 3.076881 | 2.510904 | 2.150971 | 1.042354 | 0.477985 | 0.341598 | 0.247489 |
 | Update| 57.627297 | 28.875504 | 17.369307 | 13.346055 | 7.176643 | 4.355179 | 3.355896 | 2.464973 | 2.332710 | 1.629199 | 0.832257 | 0.402538 | 0.249635 | 0.185892 |
 
-
 ![Chart](https://github.com/jindajia/ParallelPrimeFinder/raw/main/Figure/Part4vsUpdate.png)
 ![Chart](https://github.com/jindajia/ParallelPrimeFinder/raw/main/Figure/Part4_Update_Speed.png)
 The improved Part 4 utilizes a contiguous array to store the necessary prime data in advance. When number of processes are 512, after storing primes in advance, 25% running time will be reduced.
 
-**Benchmark** 
+**Benchmark**
+
 Depicting the results of these five different test cases in a chart, as shown below.
+
 ![Chart](https://github.com/jindajia/ParallelPrimeFinder/raw/main/Figure/Benchmark_Time.png)
 ![Chart](https://github.com/jindajia/ParallelPrimeFinder/raw/main/Figure/Benchmark_Speed.png)
 
 ### Future Improvement Maybe
+
 **Pre store prime*prime**
+
 At the beginning of the marking process, we need to calculate the initial index position using the result of `prime * prime`. We already reorganized the loop structure in Part4 to increase cache hits. The same prime is used up to `l/s` times in each process.  
 **One effective approach is to store the `prime * prime` values for frequently used larger primes, allowing for direct retrieval in subsequent iterations.** 
+
 However, the selection of primes presents a research-worthy question. When primes are small, the time spent searching for the corresponding square value in the hash array may exceed the time required for direct calculation. When primes are large, their probability of being used for sieving decreases.
 
