@@ -1,0 +1,70 @@
+-------------------------------------------------------------------------------
+There are messages associated with the following module(s):
+-------------------------------------------------------------------------------
+
+cuda/11.1.1:
+   Warning - This module has been deprecated and is scheduled for removal.
+   Please transition to a module from the production pool instead.
+
+-------------------------------------------------------------------------------
+
++ mpirun -np 128 program1 10000000000
+There are 455052511 primes less than or equal to 10000000000
+SIEVE (128)   6.971425
++ mpirun -np 256 program1 10000000000
+There are 455052511 primes less than or equal to 10000000000
+SIEVE (256)   3.155523
++ mpirun -np 384 program1 10000000000
+There are 455052511 primes less than or equal to 10000000000
+SIEVE (384)   4.175702
++ mpirun -np 512 program1 10000000000
+There are 455052511 primes less than or equal to 10000000000
+SIEVE (512)  12.256676
++ mpirun -np 128 program2 10000000000
+There are 455052511 primes less than or equal to 10000000000
+SIEVE (128)   3.005913
++ mpirun -np 256 program2 10000000000
+There are 455052511 primes less than or equal to 10000000000
+SIEVE (256)   1.425318
++ mpirun -np 384 program2 10000000000
+There are 455052511 primes less than or equal to 10000000000
+SIEVE (384)   0.910984
++ mpirun -np 512 program2 10000000000
+There are 455052511 primes less than or equal to 10000000000
+SIEVE (512)   0.624564
++ mpirun -np 128 program3 10000000000
+There are 455052511 primes less than or equal to 10000000000
+SIEVE (128)   2.919558
++ mpirun -np 256 program3 10000000000
+There are 455052511 primes less than or equal to 10000000000
+SIEVE (256)   1.383011
++ mpirun -np 384 program3 10000000000
+There are 455052511 primes less than or equal to 10000000000
+SIEVE (384)   0.850719
++ mpirun -np 512 program3 10000000000
+There are 455052511 primes less than or equal to 10000000000
+SIEVE (512)   0.576781
++ mpirun -np 128 program4 10000000000 32768
+There are 455052511 primes less than or equal to 10000000000
+SIEVE (128)   1.042354
++ mpirun -np 256 program4 10000000000 32768
+There are 455052511 primes less than or equal to 10000000000
+SIEVE (256)   0.477985
++ mpirun -np 384 program4 10000000000 32768
+There are 455052511 primes less than or equal to 10000000000
+SIEVE (384)   0.341598
++ mpirun -np 512 program4 10000000000 32768
+There are 455052511 primes less than or equal to 10000000000
+SIEVE (512)   0.247489
++ mpirun -np 128 program4_update 10000000000 32768
+There are 455052511 primes less than or equal to 10000000000
+SIEVE (128)   0.832257
++ mpirun -np 256 program4_update 10000000000 32768
+There are 455052511 primes less than or equal to 10000000000
+SIEVE (256)   0.402538
++ mpirun -np 384 program4_update 10000000000 32768
+There are 455052511 primes less than or equal to 10000000000
+SIEVE (384)   0.249635
++ mpirun -np 512 program4_update 10000000000 32768
+There are 455052511 primes less than or equal to 10000000000
+SIEVE (512)   0.185892
