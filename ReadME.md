@@ -177,7 +177,7 @@ After conducting experiments with different numbers of cores and comparing the r
 
 **When Pme is Large**
 
-It is evident that the prime values used for sieving will become larger and larger. For n = 10<sup>10</sup>, the maximum prime value used for sieving is 10<sup>5</sup>. 
+It is evident that the prime values used for sieving will become larger and larger. For n = 10<sup>10</sup>, the maximum prime value used for sieving is max prime under 10<sup>5</sup> which is 99991. 
 Consequently, the number of elements we need to mark decreases as the prime values increase.
 
 $$m \downarrow (pme \to \sqrt{n} )$$  
